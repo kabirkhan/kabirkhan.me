@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Machine Learning and Artificial Intelligence</title><link>/</link><description></description><lastBuildDate>Mon, 25 Sep 2017 12:00:00 -0700</lastBuildDate><item><title>Adding Dropout</title><link>/deep-learning-keras/adding_dropout.html</link><description>&lt;p&gt;&lt;a alt="Dropout" href="https://machinelearningflashcards.com"&gt;
-    &lt;img src="adding_dropout/DropOut_print.png" class="flashcard center-block"&gt;
-&lt;/a&gt;&lt;/p&gt;
-&lt;h2&gt;Preliminaries&lt;/h2&gt;
+<rss version="2.0"><channel><title>Machine Learning and Artificial Intelligence</title><link>/</link><description></description><lastBuildDate>Mon, 25 Sep 2017 12:00:00 -0700</lastBuildDate><item><title>Adding Dropout</title><link>/deep-learning-keras/adding_dropout.html</link><description>&lt;h1&gt;What is Dropout?&lt;/h1&gt;
+&lt;p&gt;Dropout is a state-of-the-art regularization technique for deep neural networks. It is a mask over a particular layer of a network to remove certain nodes and their connections from a training pass.&lt;/p&gt;
+&lt;h3&gt;&lt;strong&gt;e.g.&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;If you apply dropout with a probability of 0.2 to a layer, then for each node in that layer there is 0.2 chance of removing it from training. &lt;/p&gt;
+&lt;p&gt;For each iteration, a different subset of your network is trained creating an ensemble effect. This technique is shown to reduce overfitting and is used in most network architectures today.&lt;/p&gt;
+&lt;p&gt;&lt;img src="http://cs231n.github.io/assets/nn2/dropout.jpeg"&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Image Source: http://cs231n.github.io/neural-networks-2/#reg&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Load libraries&lt;/span&gt;
 &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;keras.datasets&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;imdb&lt;/span&gt;
@@ -12,6 +18,10 @@
 
 &lt;span class="c1"&gt;# Set random seed&lt;/span&gt;
 &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;random&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;seed&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Using TensorFlow backend.
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -29,45 +39,152 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Construct Neural Network Architecture With Dropout Layer&lt;/h2&gt;
-&lt;p&gt;In Keras, we can implement dropout by added &lt;code&gt;Dropout&lt;/code&gt; layers into our network architecture. Each &lt;code&gt;Dropout&lt;/code&gt; layer will drop a user-defined hyperparameter of units in the previous layer every batch. Remember in Keras the input layer is assumed to be the first layer and not added using the &lt;code&gt;add&lt;/code&gt;. Therefore, if we want to add dropout to the input layer, the layer we add in our is a dropout layer. This layer contains both the proportion of the input layer's units to drop &lt;code&gt;0.2&lt;/code&gt; and &lt;code&gt;input_shape&lt;/code&gt; defining the shape of the observation data. Next, after we add a dropout layer with &lt;code&gt;0.5&lt;/code&gt; after each of the hidden layers.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Downloading data from https://s3.amazonaws.com/text-datasets/imdb.npz
+17465344/17464789 [==============================] - 36s 2us/step
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Functions to train and evaluate model&lt;/h2&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;train_and_evaluate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="c1"&gt;# Compile neural network&lt;/span&gt;
+    &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;binary_crossentropy&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Cross-entropy&lt;/span&gt;
+                &lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;adam&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Adam Optimizer&lt;/span&gt;
+                &lt;span class="n"&gt;metrics&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;accuracy&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="c1"&gt;# Accuracy performance metric&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Train neural network&lt;/span&gt;
+    &lt;span class="n"&gt;history&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;model&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train_features&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Features&lt;/span&gt;
+                      &lt;span class="n"&gt;train_target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Target vector&lt;/span&gt;
+                      &lt;span class="n"&gt;epochs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Number of epochs&lt;/span&gt;
+                      &lt;span class="n"&gt;verbose&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# No output&lt;/span&gt;
+                      &lt;span class="n"&gt;batch_size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Number of observations per batch&lt;/span&gt;
+                      &lt;span class="n"&gt;validation_data&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;test_features&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test_target&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="c1"&gt;# Data for evaluation&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;history&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Neural Network Architecture&lt;/h2&gt;
+&lt;p&gt;We'll start with a standard network architecture that doesn't use Dropout&lt;/p&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Start neural network&lt;/span&gt;
 &lt;span class="n"&gt;network&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Sequential&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 
-&lt;span class="c1"&gt;# Add a dropout layer for input layer&lt;/span&gt;
-&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dropout&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;input_shape&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;number_of_features&lt;/span&gt;&lt;span class="p"&gt;,)))&lt;/span&gt;
+&lt;span class="c1"&gt;# Add fully connected layer with a ReLU activation function for input layer&lt;/span&gt;
+&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dense&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;units&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;activation&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;relu&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;input_shape&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;number_of_features&lt;/span&gt;&lt;span class="p"&gt;,)))&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Add fully connected layer with a ReLU activation function&lt;/span&gt;
 &lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dense&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;units&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;activation&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;relu&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-
-&lt;span class="c1"&gt;# Add a dropout layer for previous hidden layer&lt;/span&gt;
-&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dropout&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-
-&lt;span class="c1"&gt;# Add fully connected layer with a ReLU activation function&lt;/span&gt;
-&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dense&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;units&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;activation&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;relu&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
-
-&lt;span class="c1"&gt;# Add a dropout layer for previous hidden layer&lt;/span&gt;
-&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dropout&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 
 &lt;span class="c1"&gt;# Add fully connected layer with a sigmoid activation function&lt;/span&gt;
 &lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dense&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;units&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;activation&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sigmoid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Compile Neural Network&lt;/h2&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Compile neural network&lt;/span&gt;
-&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;compile&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;loss&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;binary_crossentropy&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Cross-entropy&lt;/span&gt;
-                &lt;span class="n"&gt;optimizer&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;rmsprop&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Root Mean Square Propagation&lt;/span&gt;
-                &lt;span class="n"&gt;metrics&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;accuracy&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt; &lt;span class="c1"&gt;# Accuracy performance metric&lt;/span&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;train_and_evaluate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Train Neural Network&lt;/h2&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Train neural network&lt;/span&gt;
-&lt;span class="n"&gt;history&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;network&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;train_features&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Features&lt;/span&gt;
-                      &lt;span class="n"&gt;train_target&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Target vector&lt;/span&gt;
-                      &lt;span class="n"&gt;epochs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Number of epochs&lt;/span&gt;
-                      &lt;span class="n"&gt;verbose&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# No output&lt;/span&gt;
-                      &lt;span class="n"&gt;batch_size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="c1"&gt;# Number of observations per batch&lt;/span&gt;
-                      &lt;span class="n"&gt;validation_data&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;test_features&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;test_target&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt; &lt;span class="c1"&gt;# Data for evaluation&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Chris Albon</dc:creator><pubDate>Mon, 25 Sep 2017 12:00:00 -0700</pubDate><guid isPermaLink="false">tag:,2017-09-25:deep-learning-keras/adding_dropout.html</guid><category>Basics</category></item></channel></rss>
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Train on 25000 samples, validate on 25000 samples
+Epoch 1/10
+25000/25000 [==============================] - 2s 62us/step - loss: 0.4306 - acc: 0.7998 - val_loss: 0.3347 - val_acc: 0.8580
+Epoch 2/10
+25000/25000 [==============================] - 1s 42us/step - loss: 0.3220 - acc: 0.8655 - val_loss: 0.3288 - val_acc: 0.8596
+Epoch 3/10
+25000/25000 [==============================] - 1s 44us/step - loss: 0.3100 - acc: 0.8716 - val_loss: 0.3346 - val_acc: 0.8578
+Epoch 4/10
+25000/25000 [==============================] - 1s 45us/step - loss: 0.3020 - acc: 0.8742 - val_loss: 0.3273 - val_acc: 0.8596
+Epoch 5/10
+25000/25000 [==============================] - 1s 42us/step - loss: 0.2910 - acc: 0.8778 - val_loss: 0.3318 - val_acc: 0.8575
+Epoch 6/10
+25000/25000 [==============================] - 1s 45us/step - loss: 0.2773 - acc: 0.8852 - val_loss: 0.3311 - val_acc: 0.8572
+Epoch 7/10
+25000/25000 [==============================] - 1s 45us/step - loss: 0.2638 - acc: 0.8940 - val_loss: 0.3382 - val_acc: 0.8552
+Epoch 8/10
+25000/25000 [==============================] - 1s 45us/step - loss: 0.2482 - acc: 0.8985 - val_loss: 0.3533 - val_acc: 0.8511
+Epoch 9/10
+25000/25000 [==============================] - 1s 59us/step - loss: 0.2325 - acc: 0.9069 - val_loss: 0.3646 - val_acc: 0.8490
+Epoch 10/10
+25000/25000 [==============================] - 1s 45us/step - loss: 0.2140 - acc: 0.9160 - val_loss: 0.3940 - val_acc: 0.8450
+
+
+
+
+
+&amp;lt;keras.callbacks.History at 0x11643df98&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Neural Network Architecture With Dropout&lt;/h2&gt;
+&lt;p&gt;In Keras, we can implement dropout using the convenient &lt;code&gt;Dropout&lt;/code&gt; layer into our network architecture. Each &lt;code&gt;Dropout&lt;/code&gt; layer will drop a user-defined hyperparameter of units in the previous layer every batch. &lt;/p&gt;
+&lt;p&gt;Remember in Keras the input layer is assumed to be the first layer and not added using the &lt;code&gt;add&lt;/code&gt; method. Therefore, if we want to add dropout to the input layer, the layer we add in our model is a dropout layer. This layer contains both the proportion of the input layer's units to drop &lt;code&gt;0.2&lt;/code&gt; and &lt;code&gt;input_shape&lt;/code&gt; defining the shape of the observation data. We add &lt;code&gt;Dropout&lt;/code&gt; layers with &lt;code&gt;0.5&lt;/code&gt; to each subsequent layer.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Start neural network with dropout&lt;/span&gt;
+&lt;span class="n"&gt;network_dropout&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;models&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Sequential&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Add a dropout layer for input layer&lt;/span&gt;
+&lt;span class="n"&gt;network_dropout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dropout&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;input_shape&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;number_of_features&lt;/span&gt;&lt;span class="p"&gt;,)))&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Add fully connected layer with a ReLU activation function&lt;/span&gt;
+&lt;span class="n"&gt;network_dropout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dense&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;units&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;activation&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;relu&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Add a dropout layer for previous hidden layer&lt;/span&gt;
+&lt;span class="n"&gt;network_dropout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dropout&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Add fully connected layer with a ReLU activation function&lt;/span&gt;
+&lt;span class="n"&gt;network_dropout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dense&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;units&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;activation&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;relu&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Add a dropout layer for previous hidden layer&lt;/span&gt;
+&lt;span class="n"&gt;network_dropout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dropout&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Add fully connected layer with a sigmoid activation function&lt;/span&gt;
+&lt;span class="n"&gt;network_dropout&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;layers&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Dense&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;units&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;activation&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sigmoid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;train_and_evaluate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;network_dropout&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Train on 25000 samples, validate on 25000 samples
+Epoch 1/10
+25000/25000 [==============================] - 2s 78us/step - loss: 0.6368 - acc: 0.6172 - val_loss: 0.4679 - val_acc: 0.8290
+Epoch 2/10
+25000/25000 [==============================] - 1s 54us/step - loss: 0.4896 - acc: 0.7714 - val_loss: 0.3674 - val_acc: 0.8484
+Epoch 3/10
+25000/25000 [==============================] - 2s 63us/step - loss: 0.4348 - acc: 0.8100 - val_loss: 0.3393 - val_acc: 0.8579
+Epoch 4/10
+25000/25000 [==============================] - 2s 71us/step - loss: 0.4130 - acc: 0.8181 - val_loss: 0.3261 - val_acc: 0.8603
+Epoch 5/10
+25000/25000 [==============================] - 1s 57us/step - loss: 0.4034 - acc: 0.8222 - val_loss: 0.3214 - val_acc: 0.8623
+Epoch 6/10
+25000/25000 [==============================] - 2s 83us/step - loss: 0.3980 - acc: 0.8232 - val_loss: 0.3262 - val_acc: 0.8612
+Epoch 7/10
+25000/25000 [==============================] - 1s 56us/step - loss: 0.3926 - acc: 0.8284 - val_loss: 0.3220 - val_acc: 0.8607
+Epoch 8/10
+25000/25000 [==============================] - 1s 54us/step - loss: 0.3889 - acc: 0.8263 - val_loss: 0.3233 - val_acc: 0.8588
+Epoch 9/10
+25000/25000 [==============================] - 1s 56us/step - loss: 0.3814 - acc: 0.8350 - val_loss: 0.3216 - val_acc: 0.8584
+Epoch 10/10
+25000/25000 [==============================] - 2s 66us/step - loss: 0.3804 - acc: 0.8323 - val_loss: 0.3209 - val_acc: 0.8604
+
+
+
+
+
+&amp;lt;keras.callbacks.History at 0x1170d7fd0&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Results&lt;/h2&gt;
+&lt;p&gt;We can see that without dropout we'll get a much higher training accuracy over 10 epochs. However, our validation accuracy starts to decline. With dropout, our network's training accuracy regularizes and we have a consistently higher validation accuracy.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Validation Accuracy Comparison&lt;/strong&gt;:
+    &lt;table&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;/td&gt;
+            &lt;th&gt; &lt;strong&gt;Network&lt;/strong&gt; &lt;/th&gt;
+            &lt;th&gt; &lt;strong&gt;Network With Dropout&lt;/strong&gt; &lt;/th&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt; &lt;strong&gt;User stayed in the course&lt;/strong&gt; &lt;/td&gt;
+            &lt;td&gt; 84.5% &lt;/td&gt;
+            &lt;td&gt; 86.04% &lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/table&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Kabir Khan</dc:creator><pubDate>Mon, 25 Sep 2017 12:00:00 -0700</pubDate><guid isPermaLink="false">tag:,2017-09-25:deep-learning-keras/adding_dropout.html</guid><category>Basics</category></item></channel></rss>
