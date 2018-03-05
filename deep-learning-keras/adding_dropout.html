@@ -116,7 +116,7 @@ v<!DOCTYPE html>
 <h1>What is Dropout?</h1>
 <p>Dropout is a state-of-the-art regularization technique for deep neural networks. It is a mask over a particular layer of a network to remove certain nodes and their connections from a training pass.</p>
 <h3><strong>e.g.</strong></h3>
-<p>If you apply dropout with a probability of 0.2 to a layer, then for each node in that layer there is 0.2 chance of removing it from training. </p>
+<p>If you apply dropout with a probability of <code>0.2</code> to a layer, then for each node in that layer there is <code>0.2</code> chance of removing it from training. </p>
 <p>For each iteration, a different subset of your network is trained creating an ensemble effect. This technique is shown to reduce overfitting and is used in most network architectures today.</p>
 <p><img src="http://cs231n.github.io/assets/nn2/dropout.jpeg"></p>
 <blockquote>
@@ -135,10 +135,6 @@ v<!DOCTYPE html>
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span>Using TensorFlow backend.
-</pre></div>
-
-
 <h2>Load IMDB Movie Review Data</h2>
 <div class="codehilite"><pre><span></span><span class="c1"># Set the number of features we want</span>
 <span class="n">number_of_features</span> <span class="o">=</span> <span class="mi">1000</span>
@@ -150,11 +146,6 @@ v<!DOCTYPE html>
 <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">num_words</span><span class="o">=</span><span class="n">number_of_features</span><span class="p">)</span>
 <span class="n">train_features</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">sequences_to_matrix</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;binary&#39;</span><span class="p">)</span>
 <span class="n">test_features</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">sequences_to_matrix</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;binary&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<div class="codehilite"><pre><span></span>Downloading data from https://s3.amazonaws.com/text-datasets/imdb.npz
-17465344/17464789 [==============================] - 36s 2us/step
 </pre></div>
 
 
