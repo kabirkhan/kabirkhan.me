@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Machine Learning and Artificial Intelligence</title><link>/</link><description></description><lastBuildDate>Mon, 25 Sep 2017 12:00:00 -0700</lastBuildDate><item><title>Adding Dropout</title><link>/deep-learning-keras/adding_dropout.html</link><description>&lt;h1&gt;What is Dropout?&lt;/h1&gt;
+<rss version="2.0"><channel><title>Machine Learning and Artificial Intelligence</title><link>/</link><description></description><lastBuildDate>Thu, 25 Jan 2018 12:00:00 -0800</lastBuildDate><item><title>Adding Dropout</title><link>/deep-learning-keras/adding_dropout.html</link><description>&lt;h1&gt;What is Dropout?&lt;/h1&gt;
 &lt;p&gt;Dropout is a state-of-the-art regularization technique for deep neural networks. It is a mask over a particular layer of a network to remove certain nodes and their connections from a training pass.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf"&gt;Original Dropout Paper&lt;/a&gt;&lt;/p&gt;
 &lt;h3&gt;&lt;strong&gt;e.g.&lt;/strong&gt;&lt;/h3&gt;
 &lt;p&gt;If you apply dropout with a probability of &lt;code&gt;0.2&lt;/code&gt; to a layer, then for each node in that layer there is &lt;code&gt;0.2&lt;/code&gt; chance of removing it from training. &lt;/p&gt;
 &lt;p&gt;For each iteration, a different subset of your network is trained creating an ensemble effect. This technique is shown to reduce overfitting and is used in most network architectures today.&lt;/p&gt;
-&lt;p&gt;&lt;img src="adding_dropout/dropout.jpeg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="http://cs231n.github.io/assets/nn2/dropout.jpeg"&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Image Source: http://cs231n.github.io/neural-networks-2/#reg&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -179,4 +179,4 @@ Epoch 10/10
             &lt;td&gt; 84.5% &lt;/td&gt;
             &lt;td&gt; 86.04% &lt;/td&gt;
         &lt;/tr&gt;
-    &lt;/table&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Kabir Khan</dc:creator><pubDate>Mon, 25 Sep 2017 12:00:00 -0700</pubDate><guid isPermaLink="false">tag:,2017-09-25:deep-learning-keras/adding_dropout.html</guid><category>Basics</category></item></channel></rss>
+    &lt;/table&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Kabir Khan</dc:creator><pubDate>Thu, 25 Jan 2018 12:00:00 -0800</pubDate><guid isPermaLink="false">tag:,2018-01-25:deep-learning-keras/adding_dropout.html</guid><category>Basics</category></item></channel></rss>
