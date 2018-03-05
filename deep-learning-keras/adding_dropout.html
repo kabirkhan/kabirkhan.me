@@ -292,19 +292,17 @@ Epoch 10/10
 
 <h2>Results</h2>
 <p>We can see that without dropout we'll get a much higher training accuracy over 10 epochs. However, our validation accuracy starts to decline. With dropout, our network's training accuracy regularizes and we have a consistently higher validation accuracy.</p>
-<h3>Network: 84.5% validation accuracy</h3>
-<h3>Network with Dropout: 86.04% validation accuracy</h3>
-<p><strong>Expected Output of Confusion Matrix (Percentages)</strong>:
+<p><strong>Validation Accuracy Comparison</strong>:
     <table>
-    "    <tr>
-    "        <td></td>
-    "        <th> <strong>Predicted user stayed in the course</strong> </th>
-    "        <th> <strong>Predicted user dropped out of the course</strong> </th>
-    "    </tr>
-    "    <tr>
-    "        <td> <strong>User stayed in the course</strong> </td>
-    "        <td> TN - 68% </td>
-            <td> FP - 9% </td>
+        <tr>
+            <td></td>
+            <th> <strong>Network</strong> </th>
+            <th> <strong>Network With Dropout</strong> </th>
+        </tr>
+        <tr>
+            <td> <strong>User stayed in the course</strong> </td>
+            <td> 84.5% </td>
+            <td> 86.04% </td>
         </tr>
     </table></p>
 </div>

@@ -175,18 +175,16 @@ Epoch 10/10
 
 &lt;h2&gt;Results&lt;/h2&gt;
 &lt;p&gt;We can see that without dropout we'll get a much higher training accuracy over 10 epochs. However, our validation accuracy starts to decline. With dropout, our network's training accuracy regularizes and we have a consistently higher validation accuracy.&lt;/p&gt;
-&lt;h3&gt;Network: 84.5% validation accuracy&lt;/h3&gt;
-&lt;h3&gt;Network with Dropout: 86.04% validation accuracy&lt;/h3&gt;
-&lt;p&gt;&lt;strong&gt;Expected Output of Confusion Matrix (Percentages)&lt;/strong&gt;:
+&lt;p&gt;&lt;strong&gt;Validation Accuracy Comparison&lt;/strong&gt;:
     &lt;table&gt;
-    "    &lt;tr&gt;
-    "        &lt;td&gt;&lt;/td&gt;
-    "        &lt;th&gt; &lt;strong&gt;Predicted user stayed in the course&lt;/strong&gt; &lt;/th&gt;
-    "        &lt;th&gt; &lt;strong&gt;Predicted user dropped out of the course&lt;/strong&gt; &lt;/th&gt;
-    "    &lt;/tr&gt;
-    "    &lt;tr&gt;
-    "        &lt;td&gt; &lt;strong&gt;User stayed in the course&lt;/strong&gt; &lt;/td&gt;
-    "        &lt;td&gt; TN - 68% &lt;/td&gt;
-            &lt;td&gt; FP - 9% &lt;/td&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;/td&gt;
+            &lt;th&gt; &lt;strong&gt;Network&lt;/strong&gt; &lt;/th&gt;
+            &lt;th&gt; &lt;strong&gt;Network With Dropout&lt;/strong&gt; &lt;/th&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt; &lt;strong&gt;User stayed in the course&lt;/strong&gt; &lt;/td&gt;
+            &lt;td&gt; 84.5% &lt;/td&gt;
+            &lt;td&gt; 86.04% &lt;/td&gt;
         &lt;/tr&gt;
     &lt;/table&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Kabir Khan</dc:creator><pubDate>Mon, 25 Sep 2017 12:00:00 -0700</pubDate><guid isPermaLink="false">tag:,2017-09-25:deep-learning-keras/adding_dropout.html</guid><category>Basics</category></item></channel></rss>
