@@ -20,10 +20,8 @@
 
 &lt;h2&gt;&lt;strong&gt;The data&lt;/strong&gt;&lt;/h2&gt;
 &lt;p&gt;All courses in the Microsoft Profressional Program are currently hosted on edX, a platform that does a great job collecting telemetry data on the browser and server, tied to specific learners.&lt;/p&gt;
-&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Example&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;event&lt;/span&gt; &lt;span class="n"&gt;collected&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
+&lt;p&gt;Example of an event collected by edX. Note we particularly care about the "event_type"&lt;/p&gt;
+&lt;p&gt;&lt;img src=""/&gt;&lt;/p&gt;
 &lt;p&gt;edX cuts logs for all Microsoft courses and ships them to us where our awesome BI team injests them into our data warehouse. From there, I aggregated this learner activity information per-course per-week for each learner.&lt;/p&gt;
 &lt;h2&gt;&lt;strong&gt;Data preprocessing&lt;/strong&gt;&lt;/h2&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;features&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
