@@ -5,7 +5,7 @@
 &lt;h3&gt;&lt;strong&gt;e.g.&lt;/strong&gt;&lt;/h3&gt;
 &lt;p&gt;If you apply dropout with a probability of &lt;code&gt;0.2&lt;/code&gt; to a layer, then for each node in that layer there is &lt;code&gt;0.2&lt;/code&gt; chance of removing it from training. &lt;/p&gt;
 &lt;p&gt;For each iteration, a different subset of your network is trained creating an ensemble effect. This technique is shown to reduce overfitting and is used in most network architectures today.&lt;/p&gt;
-&lt;p&gt;&lt;img src="http://cs231n.github.io/assets/nn2/dropout.jpeg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="adding_dropout/dropout.jpeg"&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Image Source: http://cs231n.github.io/neural-networks-2/#reg&lt;/p&gt;
 &lt;/blockquote&gt;
