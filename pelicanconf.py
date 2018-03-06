@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
-AUTHOR = 'Chris Albon'
+AUTHOR = 'Kabir Khan'
 SITENAME = 'Machine Learning and Artificial Intelligence'
 SITEURL = ''
 THEME = 'theme/'

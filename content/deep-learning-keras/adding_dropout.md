@@ -1,7 +1,7 @@
 Title: Adding Dropout    
 Slug: adding_dropout    
 Summary: How to add dropout to a neural network model in Python.    
-Date: 2017-09-25 12:00  
+Date: 2018-01-25 12:00  
 Category: Deep Learning - Keras  
 Tags: Basics
 Authors: Kabir Khan
@@ -10,9 +10,11 @@ Authors: Kabir Khan
 
 Dropout is a state-of-the-art regularization technique for deep neural networks. It is a mask over a particular layer of a network to remove certain nodes and their connections from a training pass.
 
+[Original Dropout Paper](http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf)
+
 ### **e.g.** 
 
-If you apply dropout with a probability of 0.2 to a layer, then for each node in that layer there is 0.2 chance of removing it from training. 
+If you apply dropout with a probability of `0.2` to a layer, then for each node in that layer there is `0.2` chance of removing it from training. 
 
 For each iteration, a different subset of your network is trained creating an ensemble effect. This technique is shown to reduce overfitting and is used in most network architectures today.
 
@@ -34,9 +36,6 @@ from keras import layers
 np.random.seed(0)
 ```
 
-    Using TensorFlow backend.
-
-
 ## Load IMDB Movie Review Data
 
 
@@ -52,10 +51,6 @@ tokenizer = Tokenizer(num_words=number_of_features)
 train_features = tokenizer.sequences_to_matrix(train_data, mode='binary')
 test_features = tokenizer.sequences_to_matrix(test_data, mode='binary')
 ```
-
-    Downloading data from https://s3.amazonaws.com/text-datasets/imdb.npz
-    17465344/17464789 [==============================] - 36s 2us/step
-
 
 ## Functions to train and evaluate model
 

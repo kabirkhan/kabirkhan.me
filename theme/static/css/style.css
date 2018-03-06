@@ -158,7 +158,7 @@ body > .container {
 }
 
 .article_content p, .article_content li, .homepage-blurb p{
-    font-family: 'PT Serif', serif;
+    font-family: 'Roboto', sans-serif;
     color: #333333;
     letter-spacing: -0.02px;
     font-size: 17px;
