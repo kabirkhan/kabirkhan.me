@@ -21,9 +21,9 @@
 &lt;h2&gt;&lt;strong&gt;The data&lt;/strong&gt;&lt;/h2&gt;
 &lt;p&gt;All courses in the Microsoft Profressional Program are currently hosted on edX, a platform that does a great job collecting telemetry data on the browser and server, tied to specific learners.&lt;/p&gt;
 &lt;p&gt;Example of an event collected by edX. Note we particularly care about the "event_type"&lt;/p&gt;
-&lt;p&gt;&lt;img src=""/&gt;&lt;/p&gt;
-&lt;p&gt;edX cuts logs for all Microsoft courses and ships them to us where our awesome BI team injests them into our data warehouse. From there, I aggregated this learner activity information per-course per-week for each learner.&lt;/p&gt;
-&lt;h2&gt;&lt;strong&gt;Data preprocessing&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;img src="predicting_learner_churn/1_edx-video-example.png"/&gt;&lt;/p&gt;
+&lt;p&gt;edX cuts logs for all Microsoft courses and ships them to us where our awesome BI team injests them into our data warehouse. From there, I aggregated the log events per-course, per-week for each learner.&lt;/p&gt;
+&lt;h3&gt;&lt;strong&gt;Aggregated Data Example&lt;/strong&gt;&lt;/h3&gt;
 &lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;features&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
     &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;user_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;9999&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;course_week&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;user_started_week&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
      &lt;span class="s1"&gt;&amp;#39;num_video_plays&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_subsections_viewed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
