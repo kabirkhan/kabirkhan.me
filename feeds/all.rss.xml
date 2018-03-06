@@ -1,6 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Machine Learning and Artificial Intelligence</title><link>/</link><description></description><lastBuildDate>Tue, 27 Feb 2018 12:00:00 -0800</lastBuildDate><item><title>Predicting Learner Churn in MOOCs</title><link>/projects/predicting_learner_churn.html</link><description>&lt;h3&gt;&lt;strong&gt;If you knew your learners were about to drop out of the awesome course you spent months working on, what would you do about it?&lt;/strong&gt;&lt;/h3&gt;
-&lt;p&gt;On the Microsoft Worldwide Learning team we are constantly striving to provide a better experience and better content to our learners. &lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Kabir Khan</dc:creator><pubDate>Tue, 27 Feb 2018 12:00:00 -0800</pubDate><guid isPermaLink="false">tag:,2018-02-27:projects/predicting_learner_churn.html</guid><category>Deep Learning</category><category>Churn</category><category>MOOC</category><category>Predictive Maintenance</category></item><item><title>Adding Dropout</title><link>/deep-learning-keras/adding_dropout.html</link><description>&lt;h1&gt;What is Dropout?&lt;/h1&gt;
+<rss version="2.0"><channel><title>Machine Learning and Artificial Intelligence</title><link>/</link><description></description><lastBuildDate>Tue, 27 Feb 2018 12:00:00 -0800</lastBuildDate><item><title>Predicting Learner Churn in MOOCs</title><link>/projects/predicting_learner_churn.html</link><description>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;This model was trained on data from past runs of Microsoft edX courses that are part of the &lt;a href="https://academy.microsoft.com"&gt;Microsoft Professional Program&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;If you're interested in the code for this project it's all available (for a limited time) on &lt;a href="https://github.com/kabirkhan/edx_learner_attrition/tree/dev"&gt;Github&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;&lt;strong&gt;Context&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;On the Microsoft Worldwide Learning team we are constantly striving to provide a better experience and better content to our learners. That's why it's so important to us that learners are engaged and regularly working on and interacting with our course material. &lt;/p&gt;
+&lt;p&gt;A few months ago, we started working on better understanding our learners' behavior, particularly around the tendency for learners to drop out and not complete courses. We decided we want to know when learners are struggling or trailing off and are likely to drop out of a course before they do.  &lt;/p&gt;
+&lt;p&gt;We settled on knowing a week in advance. We figured with this much notice, we could contact learners and attempt to re-engage them in the course, provide struggling learners with extra resources and even recommending harder courses for learners that were completing content too quickly.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;Over the last few months, I've built a model to predict with up to 78% accuracy when learners in a course are likely to drop out a week before they do. This model was based on a few key features of learner activity, aggregated per week of each course.&lt;/p&gt;
+&lt;h3&gt;&lt;strong&gt;Problem:&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;Can we predict a week in advance if a learner will drop out of a course&lt;/p&gt;
+&lt;h3&gt;&lt;strong&gt;Proposed solution:&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;Deep learning model trained on aggregated learner activity information&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;Packages&lt;/strong&gt;&lt;/h2&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;&lt;strong&gt;The data&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;All courses in the Microsoft Profressional Program are currently hosted on edX, a platform that does a great job collecting telemetry data on the browser and server, tied to specific learners.&lt;/p&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;Example&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;event&lt;/span&gt; &lt;span class="n"&gt;collected&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;edX cuts logs for all Microsoft courses and ships them to us where our awesome BI team injests them into our data warehouse. From there, I aggregated this learner activity information per-course per-week for each learner.&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;Data preprocessing&lt;/strong&gt;&lt;/h2&gt;
+&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;features&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;user_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;9999&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;course_week&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;user_started_week&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+     &lt;span class="s1"&gt;&amp;#39;num_video_plays&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_subsections_viewed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+     &lt;span class="s1"&gt;&amp;#39;num_problems_attempted&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_problems_correct&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+     &lt;span class="s1"&gt;&amp;#39;num_forum_posts&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;1.&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_forum_up_votes&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+     &lt;span class="s1"&gt;&amp;#39;avg_forum_sentiment&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;72&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+    &lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;user_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;100001&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;course_week&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;user_started_week&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+     &lt;span class="s1"&gt;&amp;#39;num_video_plays&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_subsections_viewed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+     &lt;span class="s1"&gt;&amp;#39;num_problems_attempted&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_problems_correct&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+     &lt;span class="s1"&gt;&amp;#39;num_forum_posts&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_forum_up_votes&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+     &lt;span class="s1"&gt;&amp;#39;avg_forum_sentiment&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;},&lt;/span&gt;
+&lt;span class="p"&gt;])&lt;/span&gt;
+
+&lt;span class="n"&gt;features&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;user_id&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;course_week&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;user_started_week&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_video_plays&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;num_subsections_viewed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_problems_attempted&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_problems_correct&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;num_forum_posts&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;num_forum_up_votes&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;avg_forum_sentiment&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;]]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div&gt;
+&lt;style scoped&gt;
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+&lt;/style&gt;
+&lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+    &lt;tr style="text-align: right;"&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;user_id&lt;/th&gt;
+      &lt;th&gt;course_week&lt;/th&gt;
+      &lt;th&gt;user_started_week&lt;/th&gt;
+      &lt;th&gt;num_video_plays&lt;/th&gt;
+      &lt;th&gt;num_subsections_viewed&lt;/th&gt;
+      &lt;th&gt;num_problems_attempted&lt;/th&gt;
+      &lt;th&gt;num_problems_correct&lt;/th&gt;
+      &lt;th&gt;num_forum_posts&lt;/th&gt;
+      &lt;th&gt;num_forum_up_votes&lt;/th&gt;
+      &lt;th&gt;avg_forum_sentiment&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt;9999&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;12&lt;/td&gt;
+      &lt;td&gt;23&lt;/td&gt;
+      &lt;td&gt;8&lt;/td&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;1.0&lt;/td&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;0.72&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt;100001&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0.0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0.00&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Kabir Khan</dc:creator><pubDate>Tue, 27 Feb 2018 12:00:00 -0800</pubDate><guid isPermaLink="false">tag:,2018-02-27:projects/predicting_learner_churn.html</guid><category>Deep Learning</category><category>Churn</category><category>MOOC</category><category>Predictive Maintenance</category></item><item><title>Adding Dropout</title><link>/deep-learning-keras/adding_dropout.html</link><description>&lt;h1&gt;What is Dropout?&lt;/h1&gt;
 &lt;p&gt;Dropout is a state-of-the-art regularization technique for deep neural networks. It is a mask over a particular layer of a network to remove certain nodes and their connections from a training pass.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf"&gt;Original Dropout Paper&lt;/a&gt;&lt;/p&gt;
 &lt;h3&gt;&lt;strong&gt;e.g.&lt;/strong&gt;&lt;/h3&gt;

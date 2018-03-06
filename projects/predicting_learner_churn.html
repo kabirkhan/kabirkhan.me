@@ -86,7 +86,7 @@ v<!DOCTYPE html>
                     <div class="form-group" style="display:inline;">
                         <div class="input-group" style="display:table;">
                             <span class="input-group-addon" style="width:1%;"><span class="glyphicon glyphicon-search"></span></span>
-                            <input class="form-control search-query" name="q" id="tipue_search_input" placeholder="Dropout" required autocomplete="off" type="text">
+                            <input class="form-control search-query" name="q" id="tipue_search_input" placeholder="e.g. Dropout" required autocomplete="off" type="text">
                         </div>
                     </div>
                 </form>
@@ -121,8 +121,114 @@ v<!DOCTYPE html>
         </ol>
     </header>
 <div class='article_content'>
-<h3><strong>If you knew your learners were about to drop out of the awesome course you spent months working on, what would you do about it?</strong></h3>
-<p>On the Microsoft Worldwide Learning team we are constantly striving to provide a better experience and better content to our learners. </p>
+<blockquote>
+<p><strong>This model was trained on data from past runs of Microsoft edX courses that are part of the <a href="https://academy.microsoft.com">Microsoft Professional Program</a></strong></p>
+<p><strong>If you're interested in the code for this project it's all available (for a limited time) on <a href="https://github.com/kabirkhan/edx_learner_attrition/tree/dev">Github</a></strong></p>
+</blockquote>
+<h2><strong>Context</strong></h2>
+<p>On the Microsoft Worldwide Learning team we are constantly striving to provide a better experience and better content to our learners. That's why it's so important to us that learners are engaged and regularly working on and interacting with our course material. </p>
+<p>A few months ago, we started working on better understanding our learners' behavior, particularly around the tendency for learners to drop out and not complete courses. We decided we want to know when learners are struggling or trailing off and are likely to drop out of a course before they do.  </p>
+<p>We settled on knowing a week in advance. We figured with this much notice, we could contact learners and attempt to re-engage them in the course, provide struggling learners with extra resources and even recommending harder courses for learners that were completing content too quickly.</p>
+<hr />
+<p>Over the last few months, I've built a model to predict with up to 78% accuracy when learners in a course are likely to drop out a week before they do. This model was based on a few key features of learner activity, aggregated per week of each course.</p>
+<h3><strong>Problem:</strong></h3>
+<p>Can we predict a week in advance if a learner will drop out of a course</p>
+<h3><strong>Proposed solution:</strong></h3>
+<p>Deep learning model trained on aggregated learner activity information</p>
+<h2><strong>Packages</strong></h2>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+</pre></div>
+
+
+<h2><strong>The data</strong></h2>
+<p>All courses in the Microsoft Profressional Program are currently hosted on edX, a platform that does a great job collecting telemetry data on the browser and server, tied to specific learners.</p>
+<div class="codehilite"><pre><span></span><span class="n">Example</span> <span class="n">of</span> <span class="n">an</span> <span class="n">event</span> <span class="n">collected</span> <span class="n">b</span>
+</pre></div>
+
+
+<p>edX cuts logs for all Microsoft courses and ships them to us where our awesome BI team injests them into our data warehouse. From there, I aggregated this learner activity information per-course per-week for each learner.</p>
+<h2><strong>Data preprocessing</strong></h2>
+<div class="codehilite"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="mi">9999</span><span class="p">,</span> <span class="s1">&#39;course_week&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;user_started_week&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> 
+     <span class="s1">&#39;num_video_plays&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;num_subsections_viewed&#39;</span><span class="p">:</span> <span class="mi">23</span><span class="p">,</span> 
+     <span class="s1">&#39;num_problems_attempted&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;num_problems_correct&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> 
+     <span class="s1">&#39;num_forum_posts&#39;</span><span class="p">:</span> <span class="mf">1.</span><span class="p">,</span> <span class="s1">&#39;num_forum_up_votes&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> 
+     <span class="s1">&#39;avg_forum_sentiment&#39;</span><span class="p">:</span> <span class="o">.</span><span class="mi">72</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="mi">100001</span><span class="p">,</span> <span class="s1">&#39;course_week&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;user_started_week&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+     <span class="s1">&#39;num_video_plays&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;num_subsections_viewed&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+     <span class="s1">&#39;num_problems_attempted&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;num_problems_correct&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+     <span class="s1">&#39;num_forum_posts&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;num_forum_up_votes&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> 
+     <span class="s1">&#39;avg_forum_sentiment&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="n">features</span><span class="p">[[</span>
+    <span class="s1">&#39;user_id&#39;</span><span class="p">,</span> <span class="s1">&#39;course_week&#39;</span><span class="p">,</span> <span class="s1">&#39;user_started_week&#39;</span><span class="p">,</span> <span class="s1">&#39;num_video_plays&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;num_subsections_viewed&#39;</span><span class="p">,</span> <span class="s1">&#39;num_problems_attempted&#39;</span><span class="p">,</span> <span class="s1">&#39;num_problems_correct&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;num_forum_posts&#39;</span><span class="p">,</span> <span class="s1">&#39;num_forum_up_votes&#39;</span><span class="p">,</span> <span class="s1">&#39;avg_forum_sentiment&#39;</span>
+<span class="p">]]</span>
+</pre></div>
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>user_id</th>
+      <th>course_week</th>
+      <th>user_started_week</th>
+      <th>num_video_plays</th>
+      <th>num_subsections_viewed</th>
+      <th>num_problems_attempted</th>
+      <th>num_problems_correct</th>
+      <th>num_forum_posts</th>
+      <th>num_forum_up_votes</th>
+      <th>avg_forum_sentiment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>9999</td>
+      <td>4</td>
+      <td>3</td>
+      <td>12</td>
+      <td>23</td>
+      <td>8</td>
+      <td>5</td>
+      <td>1.0</td>
+      <td>3</td>
+      <td>0.72</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>100001</td>
+      <td>4</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0.00</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
     <aside>
     <div class="bug-reporting__panel">
