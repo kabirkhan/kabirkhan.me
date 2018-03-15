@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"><channel><title>Machine Learning and Artificial Intelligence</title><link>/</link><description></description><lastBuildDate>Tue, 27 Feb 2018 12:00:00 -0800</lastBuildDate><item><title>Predicting Learner Churn in MOOCs</title><link>/projects/predicting_learner_churn.html</link><description>&lt;h2&gt;&lt;strong&gt;NOTE: This post is in progress...&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://microsoft-my.sharepoint.com/:p:/p/kakh/EUQMC72vYOZDryKKrEY9mKABAMgiJFytjfmceKRqIt9Zhg?e=0FqvP5"&gt;Powerpoint slide deck for a presentation on early work (Microsoft Internal Only)&lt;/a&gt;&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;This model was trained on data from past runs of Microsoft edX courses that are part of the &lt;a href="https://academy.microsoft.com"&gt;Microsoft Professional Program&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;If you're interested in the code for this project it's all available (for a limited time) on &lt;a href="https://github.com/kabirkhan/edx_learner_attrition/tree/dev"&gt;Github&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
